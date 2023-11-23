@@ -4,13 +4,14 @@ import "./index.css";
 import App from "./App";
 //import User from "./components/User.jsx"
 // import Login from "./components/Login.jsx";
-//import reportWebVitals from "./reportWebVitals";
-
+//import AreaVotes from "./components/AreaVotes";
 ReactDOM.render(
   <React.StrictMode>
+    {/* <FinalPage/> */}
     <App />
     {/* <User/> */}
     {/* <Login/> */}
+    {/* <AreaVotes/> */}
   </React.StrictMode>,
   document.getElementById("root")
 );
