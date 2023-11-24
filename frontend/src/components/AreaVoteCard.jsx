@@ -29,16 +29,6 @@ function Votes(props) {
     const classes = useStyles();
 
     return (
-        // <Card>
-        //     {/* <Card.Img variant="top" src={`/assets/images/${team.logo}`} /> */}
-        //     <Card.Body>
-        //         <Card.Title>{team.name}</Card.Title>
-        //         <Button variant="success" onClick={() => incrementVoteCount(team._id)}>
-        //             Vote
-        //         </Button>
-        //     </Card.Body>
-        //     <Card.Footer>Vote count: {team.votes}</Card.Footer>
-        // </Card>
         <div class="container">
             <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 <Grid item xs={4}>

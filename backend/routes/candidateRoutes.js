@@ -1,6 +1,8 @@
 const express = require('express')
 const Candidates = require('../models/Candidates')
 const router = express.Router()
+const auth = require('../middleware/auth')
+
 
 router.get('/get', async(req, res) => {
     try{
@@ -22,4 +24,5 @@ router.post('/create', async(req, res) => {
         res.status(400).json({Message: "Error creating candidates"})
     }
 })
+
 module.exports = router

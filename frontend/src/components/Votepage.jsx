@@ -4,11 +4,11 @@ import "bootstrap/dist/css/bootstrap.css";
 import Grid from '@mui/material/Grid';
 import "./user.css";
 import { useNavigate } from "react-router-dom";
-
+import { ReactSession } from 'react-client-session'
 function Votepage() {
     let [teams, setTeams] = useState([]);
     const history = useNavigate();
-    const [voterId,setVoterId] = useState();
+    const [voterId, setVoterId] = useState();
 
     useEffect(() => {
         fetch("http://localhost:3500/api/candidates/get", {
@@ -23,34 +23,28 @@ function Votepage() {
         // setTeams(teamsJson);
     }, []);
 
-    // function incrementVoteCount(teamId) {
-    //     teams = teams.map((team) => {
-    //         if (team._id === teamId) {
-    //             team.votes = team.votes + 1;
-    //         }
-    //         return team;
-    //     });
-    //     setTeams(teams);
-    // }
-    const incrementVoteCount = async (e) => {
-        e.preventDefault();
-        fetch('https://jsonplaceholder.typicode.com/posts', {
+    const incrementVoteCount = async (teamId) => {
+        fetch('http://localhost:3500/api/vote', {
             method: 'POST',
             body: JSON.stringify({
-                VoterId: voterId,
+                aadharNumber: ReactSession.get(voterId),
+                constituency: "ABC",
+                candidateId: teamId
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+                'authorization': localStorage.getItem('login')
             },
         })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.valid) {
+            .then((res) => {
+                console.log(res)
+                if (res.status === 200) {
                     history("/finalpage")
                 }
-            })
+            }
+            )
             .catch((err) => {
-                //kya likhu yaha
+                // Handle error if needed
             });
     }
 
@@ -61,7 +55,7 @@ function Votepage() {
                     <Grid item xs={4}>
                         <VotingCard
                             team={team}
-                            incrementVoteCount={(teamId) => incrementVoteCount(teamId)}
+                            incrementVoteCount={() => incrementVoteCount(team._id)}
                         />
                     </Grid>
                 );

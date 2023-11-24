@@ -3,65 +3,40 @@ import { Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./login.css"
 import AreaJson from "./area.json";
-import { ReactSession } from 'react-client-session';
-
+import { ReactSession } from 'react-client-session'
 const Login = () => {
   const history = useNavigate();
 
-  // const { login } = useAuth();
-
   const [error, setError] = useState('')
   const [otpsendDisable, setotpsendDisable] = useState(true);
-  //const [check,setCheck] = useState(false);
   const [voterId, setVoterId] = useState("")
-  const [area, setArea] = useState([]);
-  const [otpInput, setOtpInput] = useState(true);
   const [checkOtpDisable, setCheckOtpDisable] = useState(true);
   const [otp, setOtp] = useState("")
 
-  useEffect(() => {
-    setArea(AreaJson);
-  }, []);
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
 
-  const onChangeVoter = (e) => {
-    
+  const onChangeVoter = (e) => { 
     setVoterId(e.target.value)
     setotpsendDisable(!(voterId !== undefined || voterId !== null || voterId !== ""))
   }
 
-  const onChangeArea = (event) => {
-    event.preventDefault();
-  };
-
-  const selectArea =(event) =>{
-    setArea(event.target.value);
-  }
 
   const sendOtp = (e) => {
     e.preventDefault();
-    fetch('http://localhost:3500/api/admin/get', {
+    fetch('http://localhost:3500/api/users/login', {
       method: 'POST',
       body: JSON.stringify({
-        voterID: voterId,
-        Area: area
+        aadharNumber: voterId,
       }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       },
     })
       .then((res) => res.json())
-      .then((data) => {
-        if (data.valid) {
-          setOtpInput(true);
-          ReactSession.set("VoterId", "voterId");     
-        } else {
-          setError("Invalid Voter Id")
-        }
-      })
       .catch((err) => {
-        //kya likhu yaha
+        console.log(err);
       });
-    setVoterId("");
+    // setVoterId("");
   }
 
 
@@ -72,10 +47,11 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    fetch('https://jsonplaceholder.typicode.com/posts', {
+    fetch('http://localhost:3500/api/users/verify', {
       method: 'POST',
       body: JSON.stringify({
-        Otp: otp,
+        aadharNumber: voterId,
+        otp: otp,
       }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
@@ -83,10 +59,15 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.valid) {
-          history("/voterpage")
+        if (data.token) {
+          setIsLoggedIn(true);
+          // localStorage.setItem('login', data.token);
+          ReactSession.set("voterId", voterId)
+          localStorage.setItem('login', data.token);
+          localStorage.setItem("isloggedin", isLoggedIn);
+          history("/votepage")
         } else {
-          setError("Invalid otp")
+          setError("Invalid otp or already voted")
         }
       })
       .catch((err) => {
@@ -102,20 +83,13 @@ const Login = () => {
         <div className="input-container">
           <label>Voter Id No.</label>
           <input type="text" name="id" value={voterId} onChange={onChangeVoter} required />
-          {/* {renderErrorMessage("uname")} */}
-          <select value={area.city} onChange={onChangeArea}>
-            {area.map((option) => (
-              <option value={option.id} onClick={selectArea}>{option.city}</option>
-            ))}
-          </select>
           <div>
             <Button disabled={otpsendDisable} onClick={sendOtp}> send otp</Button>
           </div>
         </div>
         <div className="input-container">
           <label>Enter Otp </label>
-          <input type="text" name="otp" value={otp} onChange={onChangeOtp} disabled={otpInput} required />
-          {/* {renderErrorMessage("pass")} */}
+          <input type="text" name="otp" value={otp} onChange={onChangeOtp} required />
         </div>
         <div>
           <Button disabled={checkOtpDisable} onClick={handleSubmit}>Check</Button>

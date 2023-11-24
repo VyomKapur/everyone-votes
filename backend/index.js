@@ -7,6 +7,8 @@ const PORT = process.env.PORT || 3500
 const userRoutes = require('./routes/userRoutes')
 const candidateRoutes = require('./routes/candidateRoutes')
 const voteRoutes = require('./routes/voteRoutes')
+const adminRoutes = require('./routes/adminRoutes')
+
 
 const app = express()
 
@@ -23,6 +25,8 @@ app.use('/api/users', userRoutes)
 app.use('/api/candidates', candidateRoutes)
 
 app.use('/api/vote', voteRoutes)
+
+app.use('/api/admin', adminRoutes)
 
 mongoose.connect(process.env.DATABASE_URI)
     .then(() => {

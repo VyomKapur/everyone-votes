@@ -3,6 +3,11 @@ const router = express.Router();
 const Candidate = require('../models/Candidates');
 const User = require('../models/Users');
 
+
+const auth = require('../middleware/auth')
+
+router.use(auth)
+
 router.post('/', async (req, res) => {
   const { aadharNumber, constituency, candidateId } = req.body;
   try {
@@ -25,7 +30,7 @@ router.post('/', async (req, res) => {
     user.hasVoted = true;
     await user.save();
     res.status(200).json({ message: 'Vote added successfully', candidate, user});
-    
+    console.log("vote saved");
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });

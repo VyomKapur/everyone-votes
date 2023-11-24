@@ -14,7 +14,10 @@ const OfficerLogin = () => {
     const [otpInput, setOtpInput] = useState(true);
     const [checkOtpDisable, setCheckOtpDisable] = useState(true);
     const [otp, setOtp] = useState("")
+    const [isOfficerLoggedIn, setIsOfficerLoggedIn] = useState(true)
+    localStorage.setItem("isofficerLoggedin", isOfficerLoggedIn);
 
+    
     const onChangeVoter = (e) => {
         setVoterId(e.target.value)
         setotpsendDisable(!(voterId !== undefined || voterId !== null || voterId !== ""))
@@ -66,7 +69,9 @@ const OfficerLogin = () => {
             .then((res) => res.json())
             .then((data) => {
                 if (data.valid) {
-                    history("/voterpage")
+                    setIsOfficerLoggedIn(true);
+                    // localStorage.setItem("isofficerLoggedin", isOfficerLoggedIn);
+                    history("/areavotes")
                 } else {
                     setError("Invalid otp")
                 }
